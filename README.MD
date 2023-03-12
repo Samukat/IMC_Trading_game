@@ -10,4 +10,10 @@ How to pull:
 How to retreive stash:
     - View code in terminal: 
         1. git stash list
-        2. git stash show -p stash@{NUMBER SEEN IN STASH LIST}
+        2. git stash apply
+
+        optional. git stash show -p stash@{NUMBER SEEN IN STASH LIST}
+
+
+        to remove all stash:
+        git stash clear
