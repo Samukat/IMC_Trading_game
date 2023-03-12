@@ -5,6 +5,7 @@
 
 from typing import Dict, List
 from datamodel import OrderDepth, TradingState, Order
+from exmp_state import state as example_state_1
 
 class Trader:
 
@@ -13,5 +14,11 @@ class Trader:
 		Takes all buy and sell orders for all symbols as an input,
 		and outputs a list of orders to be sent
 		"""
+        for listing in state.listings.keys():
+            print(listing)
+
         result = {}
         return result
+    
+trader = Trader()
+trader.run(example_state_1)
