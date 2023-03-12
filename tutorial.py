@@ -14,10 +14,46 @@ class Trader:
 		Takes all buy and sell orders for all symbols as an input,
 		and outputs a list of orders to be sent
 		"""
-        for listing in state.listings.keys():
-            print(listing)
 
         result = {}
+        for product in state.order_depths.keys():
+            if product == "BANANAS":
+                print("\n\n New RUN")
+                order_depth: OrderDepth = state.order_depths[product]
+                orders: list[Order] = []
+
+
+                
+
+                if len(order_depth.sell_orders) > 0:
+                    acceptable_price_for_buying = sum(order_depth.sell_orders.keys())/len(order_depth.sell_orders)
+
+                    best_ask = min(order_depth.sell_orders.keys())
+                    best_ask_volume = order_depth.sell_orders[best_ask]
+                    print("The current best price for buying bananas is: " + str(best_ask))
+
+                    if best_ask < acceptable_price_for_buying:
+                        print("BUY", str(-best_ask_volume) + "x", best_ask)
+                        orders.append(Order(product, best_ask, -best_ask_volume))
+
+                if len(order_depth.buy_orders) > 0:
+                    acceptable_price_for_selling = sum(order_depth.sell_orders.keys())/len(order_depth.sell_orders)
+
+                    best_bid = max(order_depth.buy_orders.keys())
+                    best_bid_volume = order_depth.buy_orders[best_bid]
+
+                    print("The current best price for se;;ing bananas is: " + str(best_bid))
+
+                    if best_bid > acceptable_price_for_selling:
+                        print("SELL", str(best_bid_volume) + "x", best_bid)
+                        orders.append(Order(product, best_bid, -best_bid_volume))
+            
+            result[product] = orders
+
+                
+                
+
+        
         return result
     
 #trader = Trader()
