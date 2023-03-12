@@ -5,7 +5,7 @@
 
 from typing import Dict, List
 from datamodel import OrderDepth, TradingState, Order
-from exmp_state import state as example_state_1
+#from exmp_state import state as example_state_1
 
 class Trader:
 
@@ -20,5 +20,5 @@ class Trader:
         result = {}
         return result
     
-trader = Trader()
-trader.run(example_state_1)
+#trader = Trader()
+#trader.run(example_state_1)
