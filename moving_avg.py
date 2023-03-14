@@ -9,7 +9,7 @@ from datamodel import OrderDepth, TradingState, Order
 
 class Trader:
     weighted_muliplier_long = 0.01
-    weighted_muliplier_short = 0.05
+    weighted_muliplier_short = 0.03
 
 
     def __init__(self) -> None:
@@ -17,20 +17,23 @@ class Trader:
         self.moving_avg_short = 0  #assume -1 is not initalised
         self.moving_avg_long = 0
 
+        self.past_moving_avg_long = 0 
+
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
         """
 		Takes all buy and sell orders for all symbols as an input,
 		and outputs a list of orders to be sent
 		"""
+        print("\n\n New day/run at " + str(state.timestamp))
 
 
 
         result = {}
 
         for product in state.order_depths.keys():
-            if product == "BANANAS":
+            if True: #product == "BANANAS": #this was stupid as there aint muliple averages
 
-                print("\n\n New day/run at " + str(state.timestamp))
+                
                 order_depth: OrderDepth = state.order_depths[product]
                 orders: list[Order] = []
 
@@ -42,10 +45,12 @@ class Trader:
                 if (denominator_for_avg != 0):
                     average /= denominator_for_avg
 
-                    if (self.moving_avg_short == 0):
-                        moving_avg_short = average
-                        moving_avg_long = average
-                        
+                    self.past_moving_avg_long = self.moving_avg_long
+
+                    #if (self.moving_avg_short == 0):
+                    #    self.moving_avg_short = average
+                     #   self.moving_avg_long = average
+                    
                     self.moving_avg_short = self.moving_avg_short * (1 - Trader.weighted_muliplier_short) + Trader.weighted_muliplier_short*average
                     self.moving_avg_long = self.moving_avg_long * (1 - Trader.weighted_muliplier_long) + Trader.weighted_muliplier_long*average
 
@@ -58,7 +63,7 @@ class Trader:
                     best_ask_volume = order_depth.sell_orders[best_ask]
                     print("The current best price for buying bananas is: " + str(best_ask) + ". ")
 
-                    if self.moving_avg_short < self.moving_avg_long:
+                    if self.moving_avg_short < self.moving_avg_long and self.past_moving_avg_long < self.moving_avg_long:
                         print("BUY", str(-best_ask_volume) + "x", best_ask)
                         orders.append(Order(product, best_ask, -best_ask_volume))
 
