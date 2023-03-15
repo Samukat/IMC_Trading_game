@@ -62,7 +62,7 @@ class Trader:
                 best_ask_volume = order_depth.sell_orders[best_ask]
                 print(f"The current best price for buying {product} is: " + str(best_ask) + ". ")
 
-                if self.momentum[Trader.volitility_index[0]] > 0 and self.moving_avg_short[product] < self.moving_avg_long[product]:
+                if self.momentum[product] > 0: #and self.moving_avg_short[product] < self.moving_avg_long[product]:
                     print("BUY", str(-best_ask_volume) + "x", best_ask)
                     orders.append(Order(product, best_ask, -best_ask_volume))
 
@@ -72,7 +72,7 @@ class Trader:
 
                 print("The current best price for selling bananas is: " + str(best_bid))
 
-                if self.moving_avg_long[product] > self.moving_avg_short[product]:
+                if self.momentum[product] < 0:
                     print("SELL", str(best_bid_volume) + "x", best_bid)
                     orders.append(Order(product, best_bid, -best_bid_volume))
         
