@@ -1,6 +1,6 @@
 from typing import Dict, List
 from datamodel import OrderDepth, TradingState, Order
-import exmp_state
+import Example_data.exmp_state as exmp_state
 
 class Trader:
 
