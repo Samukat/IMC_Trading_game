@@ -1,7 +1,5 @@
 from typing import Dict, List
 from datamodel import OrderDepth, TradingState, Order
-import Example_data.exmp_state as exmp_state
-
 class Trader:
 
     def run(self, state: TradingState) -> Dict[str, List[Order]]:
@@ -18,7 +16,7 @@ class Trader:
 
 
             # Check if the current product is the 'PEARLS' product, only then run the order logic
-            if product == 'PRODUCT1':
+            if product == 'BANANAS':
 
                 # Retrieve the Order Depth containing all the market BUY and SELL orders for PEARLS
                 order_depth: OrderDepth = state.order_depths[product]
@@ -29,9 +27,16 @@ class Trader:
 
                 # Define a fair value for the PEARLS.
                 # Note that this value o 1 is just a dummy value, you should likely change it!
-                acceptable_price = 10000
+                acceptable_price = 10
+                total_price = sum(trade.price*trade.quantity for trade in state.market_trades[product])
+                quantity = sum(trade.quantity for trade in state.market_trades[product])
+                
+                #add to weighted average
+                if (quantity != 0):
+                    average = total_price / quantity
+                    print(f"{average}, {quantity}")
 
-                print(order_depth.sell_orders)
+                #print(order_depth.sell_orders)
                 
                 # If statement checks if there are any SELL orders in the PEARLS market
                 if len(order_depth.sell_orders) > 0:
@@ -51,7 +56,7 @@ class Trader:
                         # The code below therefore sends a BUY order at the price level of the ask,
                         # with the same quantity
                         # We expect this order to trade with the sell order
-                        print("BUY", str(-best_ask_volume) + "x", best_ask)
+                        #print("BUY", str(-best_ask_volume) + "x", best_ask)
                         orders.append(Order(product, best_ask, -best_ask_volume))
 
                 # The below code block is similar to the one above,
@@ -62,7 +67,7 @@ class Trader:
                     best_bid = max(order_depth.buy_orders.keys())
                     best_bid_volume = order_depth.buy_orders[best_bid]
                     if best_bid > acceptable_price:
-                        print("SELL", str(best_bid_volume) + "x", best_bid)
+                        #print("SELL", str(best_bid_volume) + "x", best_bid)
                         orders.append(Order(product, best_bid, -best_bid_volume))
 
                 # Add all the above the orders to the result dict
@@ -72,7 +77,3 @@ class Trader:
                 # These possibly contain buy or sell orders for PEARLS
                 # Depending on the logic above
         return result
-
-a = Trader()
-
-print(a.run(exmp_state.state))
