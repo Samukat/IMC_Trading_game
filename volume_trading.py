@@ -4,7 +4,7 @@ import numpy as np
 # from Example_data.json_state_importer import import_state
 
 class Trader:
-    period = 100
+    period = 20
 
 
     def __init__(self) -> None:
@@ -18,7 +18,7 @@ class Trader:
         result = {}
 
         for product in state.order_depths.keys():
-            if (product == "BANANAS"):
+            if (True):
                 order_depth: OrderDepth = state.order_depths[product]
                 orders: list[Order] = []
 
@@ -33,9 +33,8 @@ class Trader:
 
 
                     if (product not in self.past_day):
-                        self.past_day[product] = np.zeros(Trader.period)
+                        self.past_day[product] = np.array([average]*Trader.period)
                         self.past_day_avg[product] = np.zeros(Trader.period)
-                        self.past_day[product][1] = average
 
                     self.past_day[product] = np.roll(self.past_day[product], 1)
                     self.past_day[product][0] = average
@@ -43,7 +42,7 @@ class Trader:
                     self.past_day_avg[product] = np.roll(self.past_day_avg[product], 1)
                     self.past_day_avg[product][0] = self.past_day[product][0] - self.past_day[product][1]
                     
-                    print(f"AAAA: {str(self.past_day[product])}, BBB: {str(self.past_day_avg[product])}")
+                    print(f"AAAA: {str(self.past_day[product])}, BBB: {0}")
 
                     
                     
@@ -68,8 +67,7 @@ class Trader:
                     best_ask_volume = order_depth.sell_orders[best_ask]
                     print(f"The current best price for buying {product} is: " + str(best_ask) + ". ")
 
-                    if ((self.past_day_avg[product].mean() > 0 and self.past_day_avg[product][0:30].mean() < 0) 
-                        or self.past_day_avg[product].mean() < 0 and self.past_day_avg[product][0:30].mean() > 0): #and self.moving_avg_short[product] < self.moving_avg_long[product]:
+                    if (best_ask < self.past_day[product].mean()): #and self.moving_avg_short[product] < self.moving_avg_long[product]:
                         print("BUY", str(-best_ask_volume) + "x", best_ask)
                         orders.append(Order(product, best_ask, -best_ask_volume))
 
@@ -79,8 +77,7 @@ class Trader:
 
                     print("The current best price for selling bananas is: " + str(best_bid))
 
-                    if ((self.past_day_avg[product].mean() > 0 and self.past_day_avg[product][0:30].mean() > 0) 
-                        or self.past_day_avg[product].mean() < 0 and self.past_day_avg[product][0:30].mean() < 0):
+                    if (self.past_day[product].mean() < best_bid):
                         print("SELL", str(best_bid_volume) + "x", best_bid)
                         orders.append(Order(product, best_bid, -best_bid_volume))
             
