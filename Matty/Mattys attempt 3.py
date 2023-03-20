@@ -1,5 +1,6 @@
 from typing import Dict, List
 from datamodel import OrderDepth, TradingState, Order
+from Example_data.json_state_importer import import_state
 
 
 class Trader:
@@ -114,3 +115,5 @@ class Trader:
         return result
     
 
+trader = Trader()
+trader.run(import_state("example_data.json"))
